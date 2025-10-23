@@ -1,4 +1,4 @@
-.PHONY: all build test clean fmt lint install run help certs
+.PHONY: all build test clean fmt lint install run help
 
 # Variables
 BINARY_NAME=lenovo-console
@@ -74,19 +74,9 @@ clean:
 	@rm -rf dist/
 	@echo "Cleaned build artifacts"
 
-## certs: Generate self-signed certificates for testing
-certs:
-	@if [ ! -f server.crt ] || [ ! -f server.key ]; then \
-		echo "Generating self-signed certificates..."; \
-		openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt \
-			-days 365 -nodes -subj "/CN=localhost"; \
-		echo "Certificates generated: server.crt, server.key"; \
-	else \
-		echo "Certificates already exist"; \
-	fi
 
 ## run: Run the application (requires BMC_IP, USERNAME, PASSWORD env vars)
-run: build certs
+run: build
 	@if [ -z "$(BMC_IP)" ] || [ -z "$(USERNAME)" ] || [ -z "$(PASSWORD)" ]; then \
 		echo "Usage: make run BMC_IP=<ip> USERNAME=<user> PASSWORD=<pass> [BROWSER=firefox]"; \
 		exit 1; \

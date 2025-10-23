@@ -126,14 +126,14 @@ func (c *Console) Start() error {
 	c.server = &http.Server{
 		Addr:    fmt.Sprintf(":%d", c.serverPort),
 		Handler: c.mux,
-		TLSConfig: &tls.Config{
-			MinVersion: tls.VersionTLS12,
-		},
+		// TLSConfig: &tls.Config{
+		// 	MinVersion: tls.VersionTLS12,
+		// },
 	}
 
 	go func() {
-		if err := c.server.ListenAndServeTLS("server.crt", "server.key"); err != nil && err != http.ErrServerClosed {
-			fmt.Printf("HTTPS server error for BMC %s: %v\n", c.config.BMCIP, err)
+		if err := c.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			fmt.Printf("HTTP server error for BMC %s: %v\n", c.config.BMCIP, err)
 		}
 	}()
 
@@ -153,7 +153,7 @@ func (c *Console) Stop() error {
 
 // GetURL returns the URL to access the console
 func (c *Console) GetURL() string {
-	return fmt.Sprintf("https://localhost:%d", c.serverPort)
+	return fmt.Sprintf("http://localhost:%d", c.serverPort)
 }
 
 // GetPort returns the local server port
@@ -330,21 +330,10 @@ func (c *Console) getWindowsBrowserCommand(url string) (*exec.Cmd, error) {
 		}
 	}
 
-	// Try Chrome with flags
+	// Try Chrome
 	chromePath := "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 	if _, err := os.Stat(chromePath); err == nil {
-		return exec.Command(chromePath,
-			"--ignore-certificate-errors",
-			"--test-type",
-			"--allow-insecure-localhost",
-			"--disable-popup-blocking",
-			"--disable-blink-features=AutomationControlled",
-			"--disable-session-crashed-bubble",
-			"--disable-infobars",
-			"--no-first-run",
-			"--no-default-browser-check",
-			"--user-data-dir="+os.TempDir()+"/chrome-temp-profile",
-			url), nil
+		return exec.Command(chromePath, url), nil
 	}
 
 	// Fallback to default browser
@@ -359,21 +348,10 @@ func (c *Console) getDarwinBrowserCommand(url string) (*exec.Cmd, error) {
 		}
 	}
 
-	// Try Chrome with flags
+	// Try Chrome
 	chromePath := "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 	if _, err := os.Stat(chromePath); err == nil {
-		return exec.Command(chromePath,
-			"--ignore-certificate-errors",
-			"--test-type",
-			"--allow-insecure-localhost",
-			"--disable-popup-blocking",
-			"--disable-blink-features=AutomationControlled",
-			"--disable-session-crashed-bubble",
-			"--disable-infobars",
-			"--no-first-run",
-			"--no-default-browser-check",
-			"--user-data-dir="+os.TempDir()+"/chrome-temp-profile",
-			url), nil
+		return exec.Command(chromePath, url), nil
 	}
 
 	// Fallback to default browser
@@ -394,7 +372,7 @@ func (c *Console) getLinuxBrowserCommand(url string) (*exec.Cmd, error) {
 		}
 	}
 
-	// Try Chrome/Chromium with flags
+	// Try Chrome/Chromium
 	chromePaths := []string{
 		"/usr/bin/google-chrome",
 		"/usr/bin/google-chrome-stable",
@@ -403,18 +381,7 @@ func (c *Console) getLinuxBrowserCommand(url string) (*exec.Cmd, error) {
 	}
 	for _, chromePath := range chromePaths {
 		if _, err := os.Stat(chromePath); err == nil {
-			return exec.Command(chromePath,
-				"--ignore-certificate-errors",
-				"--test-type",
-				"--allow-insecure-localhost",
-				"--disable-popup-blocking",
-				"--disable-blink-features=AutomationControlled",
-				"--disable-session-crashed-bubble",
-				"--disable-infobars",
-				"--no-first-run",
-				"--no-default-browser-check",
-				"--user-data-dir="+os.TempDir()+"/chrome-temp-profile",
-				url), nil
+			return exec.Command(chromePath, url), nil
 		}
 	}
 

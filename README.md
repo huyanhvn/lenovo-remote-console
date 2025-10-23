@@ -11,8 +11,7 @@ A Go module for connecting to Lenovo XCC (XClarity Controller) remote consoles p
 - Connect to Lenovo XCC remote consoles
 - Web-based KVM viewer using Lenovo's RPViewer SDK
 - Support for multiple simultaneous console sessions
-- Automatic certificate handling
-- Firefox and Chrome browser support with optimized settings
+- Firefox and Chrome browser support
 - Programmatic API for integration into other Go applications
 
 ## Installation
@@ -37,7 +36,7 @@ go install github.com/huyanhvn/lenovo-remote-console/cmd/lenovo-console@latest
 # Basic usage
 lenovo-console <BMC_IP> <USERNAME> <PASSWORD>
 
-# Use Firefox (recommended for better certificate handling)
+# Use Firefox
 lenovo-console 10.145.127.12 admin password firefox
 
 # Or run directly with go run
@@ -61,7 +60,7 @@ func main() {
         Username:   "admin",
         Password:   "password",
         UseFirefox: true,  // Optional: prefer Firefox
-        ServerPort: 8443,  // Optional: specify port (0 for auto)
+        ServerPort: 8080,  // Optional: specify port (0 for auto)
     }
 
     // Create and launch console
@@ -157,25 +156,11 @@ Main console object with methods:
 #### `GetRPPort(bmcIP, username, password)`
 Query the XCC for the Remote Presence port. Returns port number or 3900 as default.
 
-## Certificate Requirements
-
-The console requires HTTPS with proper certificates. You'll need:
-
-1. `server.crt` and `server.key` files in the working directory for the local HTTPS server
-2. Accept the self-signed certificate warnings for both localhost and the BMC
-
-### Generating Self-Signed Certificates
-
-```bash
-openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt \
-  -days 365 -nodes -subj "/CN=localhost"
-```
-
 ## Browser Compatibility
 
-- **Firefox** (Recommended): Better handling of self-signed certificates
-- **Chrome/Chromium**: Works with special flags to bypass certificate warnings
-- **Safari**: Should work but may require manual certificate acceptance
+- **Firefox** (Recommended): Better handling of BMC connections
+- **Chrome/Chromium**: Works well with HTTP connections
+- **Safari**: Should work with HTTP connections
 
 ## Examples
 
@@ -189,7 +174,6 @@ See the `examples/` directory for more usage examples:
 - Go 1.21 or later
 - Network access to Lenovo XCC/BMC
 - Modern web browser (Firefox recommended)
-- HTTPS certificates (self-signed acceptable)
 
 ## License
 
@@ -210,13 +194,6 @@ If you discover a security vulnerability within this project, please create an i
 - All contributors who help improve this project
 
 ## Troubleshooting
-
-### Certificate Issues
-If you see "Certificate not verified" errors:
-1. Accept the localhost certificate first
-2. Open `https://<BMC_IP>:3900` in a new tab
-3. Accept the BMC certificate
-4. Return to console tab and click "Retry Connection"
 
 ### WebSocket Errors
 - Try using Firefox instead of Chrome

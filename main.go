@@ -13,7 +13,7 @@ func main() {
 		fmt.Println("Usage: go run main.go <BMC_IP> <USERNAME> <PASSWORD> [firefox]")
 		fmt.Println("Example: go run main.go 10.145.127.12 USERID PASSW0RD")
 		fmt.Println("         go run main.go 10.145.127.12 USERID PASSW0RD firefox")
-		fmt.Println("\nNote: Firefox handles certificates better than Chrome for this use case")
+		fmt.Println("\nNote: Firefox handles BMC connections better than Chrome for this use case")
 		os.Exit(1)
 	}
 
@@ -58,16 +58,10 @@ func main() {
 	// Print browser-specific instructions
 	if useFirefox {
 		fmt.Println("\n✓ Firefox launched")
-		fmt.Println("  Firefox handles certificates better for BMC connections")
-		fmt.Println("  You may need to accept the localhost certificate when prompted")
+		fmt.Println("  Firefox handles BMC connections well")
 	} else {
-		fmt.Println("\n⚠️  IMPORTANT - Certificate Acceptance:")
-		fmt.Println("1. First accept the localhost certificate if prompted")
-		fmt.Println("2. If you see 'Certificate not verified' error:")
-		fmt.Printf("   - Open https://%s:%d in a new tab\n", bmcIP, rpPort)
-		fmt.Println("   - Accept the BMC certificate")
-		fmt.Println("   - Return to the console tab and click 'Retry Connection'")
-		fmt.Println("\nTip: Firefox handles certificates better than Chrome for this use case")
+		fmt.Println("\n✓ Browser launched")
+		fmt.Println("  Chrome/Chromium should work well with HTTP connections")
 	}
 
 	fmt.Println("\nNote: The browser must be able to reach the XCC at:", bmcIP)
