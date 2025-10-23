@@ -333,7 +333,18 @@ func (c *Console) getWindowsBrowserCommand(url string) (*exec.Cmd, error) {
 	// Try Chrome
 	chromePath := "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 	if _, err := os.Stat(chromePath); err == nil {
-		return exec.Command(chromePath, url), nil
+		return exec.Command(chromePath,
+			"--ignore-certificate-errors",
+			"--test-type",
+			"--allow-insecure-localhost",
+			"--disable-popup-blocking",
+			"--disable-blink-features=AutomationControlled",
+			"--disable-session-crashed-bubble",
+			"--disable-infobars",
+			"--no-first-run",
+			"--no-default-browser-check",
+			"--user-data-dir="+os.TempDir()+"/chrome-temp-profile",
+			url), nil
 	}
 
 	// Fallback to default browser
@@ -351,7 +362,18 @@ func (c *Console) getDarwinBrowserCommand(url string) (*exec.Cmd, error) {
 	// Try Chrome
 	chromePath := "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 	if _, err := os.Stat(chromePath); err == nil {
-		return exec.Command(chromePath, url), nil
+		return exec.Command(chromePath,
+			"--ignore-certificate-errors",
+			"--test-type",
+			"--allow-insecure-localhost",
+			"--disable-popup-blocking",
+			"--disable-blink-features=AutomationControlled",
+			"--disable-session-crashed-bubble",
+			"--disable-infobars",
+			"--no-first-run",
+			"--no-default-browser-check",
+			"--user-data-dir="+os.TempDir()+"/chrome-temp-profile",
+			url), nil
 	}
 
 	// Fallback to default browser
@@ -381,7 +403,18 @@ func (c *Console) getLinuxBrowserCommand(url string) (*exec.Cmd, error) {
 	}
 	for _, chromePath := range chromePaths {
 		if _, err := os.Stat(chromePath); err == nil {
-			return exec.Command(chromePath, url), nil
+			return exec.Command(chromePath,
+				"--ignore-certificate-errors",
+				"--test-type",
+				"--allow-insecure-localhost",
+				"--disable-popup-blocking",
+				"--disable-blink-features=AutomationControlled",
+				"--disable-session-crashed-bubble",
+				"--disable-infobars",
+				"--no-first-run",
+				"--no-default-browser-check",
+				"--user-data-dir="+os.TempDir()+"/chrome-temp-profile",
+				url), nil
 		}
 	}
 

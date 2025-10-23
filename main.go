@@ -60,8 +60,7 @@ func main() {
 		fmt.Println("\n✓ Firefox launched")
 		fmt.Println("  Firefox handles BMC connections well")
 	} else {
-		fmt.Println("\n✓ Browser launched")
-		fmt.Println("  Chrome/Chromium should work well with HTTP connections")
+		fmt.Println("\n✓ Chrome launched")
 	}
 
 	fmt.Println("\nNote: The browser must be able to reach the XCC at:", bmcIP)
